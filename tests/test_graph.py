@@ -7,7 +7,7 @@ from make_graphs import *
 path = os.getcwd().split("/")
 
 new_path = ""
-for i in xrange(1, len(path) - 1):
+for i in range(1, len(path) - 1):
     new_path += "/" + path[i]
 
 sys.path.append(new_path)

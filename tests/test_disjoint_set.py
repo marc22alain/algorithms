@@ -7,7 +7,7 @@ path = os.getcwd().split("/")
 # print path
 
 new_path = ""
-for i in xrange(1, len(path) - 1):
+for i in range(1, len(path) - 1):
     new_path += "/" + path[i]
 # print new_path
 

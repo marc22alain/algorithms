@@ -38,7 +38,7 @@ class DFS(GraphAlgorithm):
         super(DFS, self).__init__(graph)
 
     def _doPrep(self):
-    	self.vertex_list = self.graph.getNodes().values()
+    	self.vertex_list = list(self.graph.getNodes().values())
     	self.next_vertex = self.vertex_list[0]
     	self.next_vertex_index = 1
     	for vertex in self.vertex_list:
@@ -48,7 +48,7 @@ class DFS(GraphAlgorithm):
 
 
     def doStep(self):
-    	print "number of iterators = " + str(len(self.iterators))
+    	print("number of iterators = " + str(len(self.iterators)))
     	served = False
     	while not served:
     		try:
@@ -56,13 +56,13 @@ class DFS(GraphAlgorithm):
     			served = True
     		except StopIteration:
     			self.iterators.pop(-1)
-    			print "popping one iterator"
+    			print("popping one iterator")
     	return result
 
 
     def DFSstart(self):
     	for vertex in self.vertex_list:
-    		print "starting new tree"
+    		print("starting new tree")
     		if vertex.colour == WHITE:
     			self.iterators.append(self.DFSvisit(vertex))
     			yield self.time

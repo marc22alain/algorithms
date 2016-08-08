@@ -88,7 +88,7 @@ class Dijkstra(GraphAlgorithm):
 
     def printS(self):
         for v in self.S:
-            print v.getName() + ": " + str(v.d)
+            print(v.getName() + ": " + str(v.d))
 
 
 # perhaps Extract-Min should be implemented in graph_functions,

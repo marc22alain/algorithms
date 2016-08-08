@@ -1,25 +1,24 @@
 import os
 import sys
-import unittest
+#import unittest
 
-from make_graphs import *
+import make_graphs as mg
 
 path = os.getcwd().split("/")
-print path
+print(path)
 
-# new_path = ""
-# for i in xrange(1, len(path) - 1):
-#     new_path += "/" + path[i]
-# # print new_path
+new_path = ""
+for i in range(1, len(path) - 1):
+    new_path += "/" + path[i]
+print(new_path)
 
-# sys.path.append(new_path)
+sys.path.append(new_path)
 
-# from ..dfs import DFS
-
-from .. import gne
+from dfs import DFS
 
 
-dfs = DFS(tree()["graph"])
 
-for i in xrange(15):
-	print dfs.doStep()
+dfs = DFS(mg.tree()["graph"])
+
+for i in range(15):
+	print(dfs.doStep())

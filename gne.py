@@ -36,7 +36,7 @@ class Graph(object):
 
     def getNodeNames(self):
         names = "nodes: "
-        for name in self.nodes.keys():
+        for name in list(self.nodes.keys()):
             names += name
             names += ", "
         return names[:-2]
@@ -72,7 +72,7 @@ class Graph(object):
         #     print "attempted to add node already stored"
 
     def addEdgeByNames(self, node_name_tuple):
-        print "Don't try to do this... EVER"
+        print("Don't try to do this... EVER")
         # ... it will eventually violate Rule #1
         # self.addEdge( Edge( Node(node_name_tuple[0]), Node(node_name_tuple[1]) ) )
 
@@ -91,17 +91,17 @@ class Graph(object):
         pass
 
     def printElements(self):
-        print "graph = Graph()"
+        print("graph = Graph()")
         node_list = []
-        for n in self.nodes.values():
+        for n in list(self.nodes.values()):
             name = n.getName()
-            print "%s = Node('%s')" %  (name, name)
+            print("%s = Node('%s')" %  (name, name))
             node_list.append(name)
-        print "graph.addNodeList(%s)" % node_list
+        print("graph.addNodeList(%s)" % node_list)
         for e in self.edges:
             s, t = e.getEnds()
             w = e.getWeight()
-            print "graph.addEdge(Edge((%s,%s),%s))" % (s.getName(), t.getName(), w)
+            print("graph.addEdge(Edge((%s,%s),%s))" % (s.getName(), t.getName(), w))
 
 
 

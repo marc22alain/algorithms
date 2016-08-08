@@ -50,7 +50,7 @@ class BellmanFord(GraphAlgorithm):
 
 
     def doComplete(self):
-        for i in xrange(len(self.graph.getNodes().values())):
+        for i in range(len(self.graph.getNodes().values())):
             for s in self.graph.getEdges():
                 u = s.getEnds()[0]
                 v = s.getEnds()[1]

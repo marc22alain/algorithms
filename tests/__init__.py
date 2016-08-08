@@ -1,0 +1,1 @@
+__path__ = ['/Users/marc_alain/CODE/PyLib/algorithms/tests']

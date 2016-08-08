@@ -16,7 +16,7 @@ class CashiersProblemGreedy(Algorithm, OpCounter):
 
     def _doPrep(self):
         self.change = {}
-        for i in xrange(len(self.coin_list)):
+        for i in range(len(self.coin_list)):
             self.change[self.coin_list[i]] = 0
 
 
@@ -30,7 +30,7 @@ class CashiersProblemGreedy(Algorithm, OpCounter):
 
     def doComplete(self, change_owed):
         self._doPrep()
-        for i in xrange(len(self.coin_list)):
+        for i in range(len(self.coin_list)):
             while change_owed - self.coin_list[i] >= 0:
                 # add three counts for a successful comparison and two math ops
                 self.addOpCount(3)
@@ -61,15 +61,15 @@ class CashiersProblemMemoed(CashiersProblemGreedy):
 
 
     def _doPrep(self):
-        self.M = [{"num_coins":0} for i in xrange(self.change_owed + 1)]
-        # for i in xrange(self.change_owed + 1):
+        self.M = [{"num_coins":0} for i in range(self.change_owed + 1)]
+        # for i in range(self.change_owed + 1):
         #     self.M[i] = {"num_coins":0}
 
 
     def doComplete(self, change_owed):
         self.change_owed = change_owed
         self._doPrep()
-        for i in xrange(self.change_owed + 1):
+        for i in range(self.change_owed + 1):
             self.recurrence(i)
 
 
@@ -80,7 +80,7 @@ class CashiersProblemMemoed(CashiersProblemGreedy):
             return
         else:
             min_coins = float("inf")
-            for i in xrange(len(self.coin_list)):
+            for i in range(len(self.coin_list)):
                 sub = amount - self.coin_list[i]
                 if sub >= 0:
                     if 1 + self.M[sub]["num_coins"] < min_coins:
@@ -109,7 +109,7 @@ class CashiersProblemRecursive(CashiersProblemGreedy):
     		return 0
         min_coins = float("inf")
         # for all coins
-        for i in xrange(len(self.coin_list)):
+        for i in range(len(self.coin_list)):
         	# try subtracting that coin increment
             sub = change_owed - self.coin_list[i]
             if sub >= 0:

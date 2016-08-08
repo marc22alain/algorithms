@@ -64,7 +64,7 @@ class DisjointSet(object):
         # assert type(x.p) != type(x), "this node has already been assignd to a set"
         try:
             a = x.p
-            print "nde OK"
+            print("nde OK")
             raise TypeError("Node %s has already been assigned to a set" % x.__str__())
         except AttributeError as e:
             # print e

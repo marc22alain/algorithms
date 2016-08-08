@@ -1,7 +1,7 @@
-from Tkinter import *
-import ttk
+from tkinter import *
+from tkinter import ttk
 from math import *
-from gne import *
+from gne import Graph, Node, Edge
 import random
 
 from dfs import DFS
@@ -194,7 +194,7 @@ class Application(Frame):
     def addNode(self):
         new_node = Node(self.node_name_var.get())
         self._addNode(new_node)
-        print self.graph.getNodeNames()
+        print(self.graph.getNodeNames())
         self.drawGraph()
         self.node_name_input.delete(0, "end")
 
@@ -202,7 +202,7 @@ class Application(Frame):
     def _addNode(self, new_node):
         self.graph.addNode(new_node)
         unassigned = True
-        slots = self.slots.keys()
+        slots = list(self.slots.keys())
         while unassigned == True:
             choice = random.choice(slots)
             node = self.slots[choice]["node"]
@@ -221,8 +221,8 @@ class Application(Frame):
         circle = self.slot_options["circle"]
         spacing = self.slot_options["spacing"]
         slots = {}
-        for i in xrange(1, (width / spacing)):
-            for j in xrange(1, (height / spacing)):
+        for i in range(1, (width // spacing)):
+            for j in range(1, (height // spacing)):
                 slots[(i,j)] = { "coords" : (i * spacing, j * spacing), "node" : None}
         return slots
 
@@ -230,7 +230,7 @@ class Application(Frame):
         """ Delete all graph elements, to start anew. """
         self.graph = Graph()
         self.nodes.clear()
-        slots = self.slots.keys()
+        slots = list(self.slots.keys())
         for slot in slots:
             self.slots[slot]["node"] = None
         self.dfs = None
@@ -238,9 +238,9 @@ class Application(Frame):
 
     def addEdge(self):
         source_name = self.source_node_name_var.get()
-        assert source_name in self.nodes.keys()
+        assert source_name in list(self.nodes.keys())
         target_name = self.target_node_name_var.get()
-        assert target_name in self.nodes.keys()
+        assert target_name in list(self.nodes.keys())
         weight = self.edge_weight_var.get()
         assert type(weight) == float
 
@@ -263,7 +263,7 @@ class Application(Frame):
         self.canvas.delete("in_motion")
         spacing = self.slot_options["spacing"]
         slot_select = ((event.x + (spacing / 2)) / spacing, (event.y + (spacing / 2)) / spacing)
-        if self.node_to_move != None and slot_select in self.slots.keys() and self.slots[slot_select]["node"] == None:
+        if self.node_to_move != None and slot_select in list(self.slots.keys()) and self.slots[slot_select]["node"] == None:
             # move node out of previous slot
             previous_slot = self.nodes[self.node_to_move.getName()]
             self.slots[previous_slot]["node"] = None
@@ -315,19 +315,19 @@ class Application(Frame):
         self.graph.printElements()
 
     def doStep(self):
-        print "doing one step"
+        print("doing one step")
         if self.dfs == None:
             self.dfs = DFS(self.graph)
-        print self.dfs.doStep()
+        print(self.dfs.doStep())
         self.drawGraph()
 
     def loadGraph(self):
         graphs = dir(make_graphs)
         if self.graph_name_var.get() not in graphs:
-            print graphs
+            print(graphs)
         else:
             graph = eval("make_graphs." + self.graph_name_var.get() + "()")["graph"]
-            for n in graph.getNodes().values():
+            for n in list(graph.getNodes().values()):
                 self._addNode(n)
             self.graph = graph
         self.drawGraph()
