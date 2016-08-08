@@ -21,10 +21,11 @@ Notes:
     - G.Adj is the adjacency list that defines the graph
     - hand-drawn example seems to question the need for the queue picking the
       least v.d, as long as v.d < infinity, a path addition can be made;
-      perhaps there are corner cases (or the proof) that require this codition.
+      perhaps there are corner cases (or the proof) that require this condition.
+    - the first vertex to be pulled is the source vertex, since it is assigned v.d = 0
 
 Questions::
-    - does Extract-Min() sort after the head is popped off, or before, 'cause'
+    - does Extract-Min() sort after the head is popped off, or before, 'cause
       the Q has to be sorted again after Relax() is performed; a key update
       in the for... loop would be perfect
 
