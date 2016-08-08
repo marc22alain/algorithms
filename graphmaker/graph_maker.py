@@ -8,6 +8,8 @@ from dfs import DFS
 
 from tests import make_graphs
 
+from menubar import MenuBar
+
 
 class Application(Frame):
     def __init__(self, master=None):
@@ -15,16 +17,17 @@ class Application(Frame):
         self.slot_options = {"spacing":50, "circle":20}
         Frame.__init__(self, master)
         self.grid()
+        self.menuBar = MenuBar(self)
         self.createSuperWidgets()
         self.graph = Graph()
         self.slots = self.makeSlots()
         self.nodes = {}
         self.drawGraph(0)
-        self.dfs = None
 
 
     def createSuperWidgets(self):
         # the canvas
+        
         self.DrawFrame = Frame(self,bd=5)
         self.DrawFrame.grid(row=0, column=0)
 
@@ -86,7 +89,7 @@ class Application(Frame):
         self.AddEdgeFrame.grid(row=row_num, column=0, columnspan=2)
 
         row_num += 1
-        self.source_node_name_label = Label(self.AddEdgeFrame, text='Source node name', width=13)
+        self.source_node_name_label = Label(self.AddEdgeFrame, text='Source node name', width=15)
         self.source_node_name_label.grid(row=row_num, column=0)
         self.source_node_name_var = StringVar()
         self.source_node_name_input = Entry(self.AddEdgeFrame, textvariable=self.source_node_name_var ,width=15)
@@ -115,33 +118,6 @@ class Application(Frame):
         row_num += 1
         ttk.Separator(self.DefineFrame,orient=HORIZONTAL).grid(row=row_num, column=0, columnspan=2, sticky="ew", pady=10)
 
-        # clear ALL ELEMENTS
-        row_num += 1
-        self.clear_all_button = Button(self.DefineFrame,text="Clear all elements",command=self.clearAll, width=28)
-        self.clear_all_button.grid(row=row_num, column=0, columnspan=2, pady=5)
-
-        # separator
-        row_num += 1
-        ttk.Separator(self.DefineFrame,orient=HORIZONTAL).grid(row=row_num, column=0, columnspan=2, sticky="ew", pady=10)
-
-        # print ELEMENTS of GRAPH as TEXT
-        row_num += 1
-        self.print_element_button = Button(self.DefineFrame,text="Print graph elements as list",command=self.printElements, width=28)
-        self.print_element_button.grid(row=row_num, column=0, columnspan=2, pady=5)
-
-        # separator
-        row_num += 1
-        ttk.Separator(self.DefineFrame,orient=HORIZONTAL).grid(row=row_num, column=0, columnspan=2, sticky="ew", pady=10)
-
-        # do DFS step
-        row_num += 1
-        self.do_step_button = Button(self.DefineFrame,text="Do one step in DFS",command=self.doStep, width=28)
-        self.do_step_button.grid(row=row_num, column=0, columnspan=2, pady=5)
-
-        # separator
-        row_num += 1
-        ttk.Separator(self.DefineFrame,orient=HORIZONTAL).grid(row=row_num, column=0, columnspan=2, sticky="ew", pady=10)
-
         row_num += 1
         self.graph_name_label = Label(self.DefineFrame, text='Graph name', width=13)
         self.graph_name_label.grid(row=row_num, column=0)
@@ -153,6 +129,8 @@ class Application(Frame):
         row_num += 1
         self.load_graph_button = Button(self.DefineFrame,text="load graph",command=self.loadGraph, width=28)
         self.load_graph_button.grid(row=row_num, column=0, columnspan=2, pady=5)
+        
+        self.row_num = row_num
 
 
     def drawGraph(self, frame_num=1):
@@ -255,14 +233,14 @@ class Application(Frame):
     def selectNode(self, event):
         """ canvas click event handler """
         spacing = self.slot_options["spacing"]
-        slot_select = ((event.x + (spacing / 2)) / spacing, (event.y + (spacing / 2)) / spacing)
+        slot_select = ((event.x + (spacing / 2)) // spacing, (event.y + (spacing / 2)) // spacing)
         self.node_to_move = self.slots[slot_select]["node"]
 
     def releaseNode(self, event):
         """ canvas click event handler """
         self.canvas.delete("in_motion")
         spacing = self.slot_options["spacing"]
-        slot_select = ((event.x + (spacing / 2)) / spacing, (event.y + (spacing / 2)) / spacing)
+        slot_select = ((event.x + (spacing / 2)) // spacing, (event.y + (spacing / 2)) // spacing)
         if self.node_to_move != None and slot_select in list(self.slots.keys()) and self.slots[slot_select]["node"] == None:
             # move node out of previous slot
             previous_slot = self.nodes[self.node_to_move.getName()]
@@ -294,7 +272,6 @@ class Application(Frame):
 
 
     def drawArrowHeads(self, edge):
-        """ Helper method for drawGraph; returns magic numbers for placing the edge weight w/r/t the edge. """
         nodes = edge.getEnds()
         source_coords = self.slots[self.nodes[nodes[0].getName()]]["coords"]
         target_coords = self.slots[self.nodes[nodes[1].getName()]]["coords"]
@@ -314,12 +291,6 @@ class Application(Frame):
     def printElements(self):
         self.graph.printElements()
 
-    def doStep(self):
-        print("doing one step")
-        if self.dfs == None:
-            self.dfs = DFS(self.graph)
-        print(self.dfs.doStep())
-        self.drawGraph()
 
     def loadGraph(self):
         graphs = dir(make_graphs)
@@ -331,6 +302,17 @@ class Application(Frame):
                 self._addNode(n)
             self.graph = graph
         self.drawGraph()
+
+    def addDoStepButton(self, message, method):
+        # self.graphmaker.addDoStepButton("Do one DFS step", self.doDFSStep)
+        # adding the DOSTEP control
+        # separator
+        self.row_num += 1
+        ttk.Separator(self.DefineFrame,orient=HORIZONTAL).grid(row=self.row_num, column=0, columnspan=2, sticky="ew", pady=10)
+        # do DFS step
+        self.row_num += 1
+        self.do_step_button = Button(self.DefineFrame,text=message,command=method, width=28)
+        self.do_step_button.grid(row=self.row_num, column=0, columnspan=2, pady=5)
 
 
 app = Application()

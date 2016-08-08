@@ -21,6 +21,9 @@ DFS-VISIT(G, u)
 8 u.color = BLACK	// blacken u; it i finished
 9 time = time + 1
 10 u.f = time
+
+NOTE: CLRS do not show any code for accounting for edge status, yet they do colour
+the edges when illustrating how the algorithm works.
 """
 
 
@@ -38,56 +41,58 @@ class DFS(GraphAlgorithm):
         super(DFS, self).__init__(graph)
 
     def _doPrep(self):
-    	self.vertex_list = list(self.graph.getNodes().values())
-    	self.next_vertex = self.vertex_list[0]
-    	self.next_vertex_index = 1
-    	for vertex in self.vertex_list:
-    		vertex.colour = WHITE
-    		vertex.pi = None
-    	self.iterators.append(self.DFSstart())
+        self.vertex_list = list(self.graph.getNodes().values())
+        self.next_vertex = self.vertex_list[0]
+        self.next_vertex_index = 1
+        for vertex in self.vertex_list:
+            vertex.colour = WHITE
+            vertex.pi = None
+        self.iterators.append(self.DFSstart())
+        for e in self.graph.edges:
+             e.explored = False
 
 
     def doStep(self):
-    	print("number of iterators = " + str(len(self.iterators)))
-    	served = False
-    	while not served:
-    		try:
-    			result = next(self.iterators[-1])
-    			served = True
-    		except StopIteration:
-    			self.iterators.pop(-1)
-    			print("popping one iterator")
-    	return result
+        print("number of iterators = " + str(len(self.iterators)))
+        served = False
+        while not served:
+            try:
+                result = next(self.iterators[-1])
+                served = True
+            except StopIteration:
+                self.iterators.pop(-1)
+                print("popping one iterator")
+        return result
 
 
     def DFSstart(self):
-    	for vertex in self.vertex_list:
-    		print("starting new tree")
-    		if vertex.colour == WHITE:
-    			self.iterators.append(self.DFSvisit(vertex))
-    			yield self.time
+        for vertex in self.vertex_list:
+            print("starting new tree")
+            if vertex.colour == WHITE:
+                self.iterators.append(self.DFSvisit(vertex))
+                yield self.time
 
     def DFSvisit(self, vertex):
-    	self.time += 1
-    	vertex.discovery_time = self.time
-    	vertex.colour = GRAY
-    	for neighbour in vertex.getNeighbours():
-    		if neighbour.colour == WHITE:
-    			neighbour.pi = vertex
-		    	self.iterators.append(self.DFSvisit(neighbour))
-    			yield self.time
-    	yield self.time
-    	vertex.colour = BLACK
-    	self.time += 1
-    	vertex.finish_time = self.time
-    	yield self.time
+        self.time += 1
+        vertex.discovery_time = self.time
+        vertex.colour = GRAY
+        for neighbour in vertex.getNeighbours():
+            if neighbour.colour == WHITE:
+                neighbour.pi = vertex
+                self.iterators.append(self.DFSvisit(neighbour))
+                yield self.time
+        yield self.time
+        vertex.colour = BLACK
+        self.time += 1
+        vertex.finish_time = self.time
+        yield self.time
 
 
     def doComplete(self):
-    	self.DFSstart()
+        self.DFSstart()
 
     def assertValid(self):
-    	pass
+        pass
 
 
     # trying to do a single step at a time
