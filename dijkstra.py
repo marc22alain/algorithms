@@ -88,8 +88,11 @@ class Dijkstra(GraphAlgorithm):
                 relax(u, edge.getEnds()[1], edge.getWeight())
 
     def printS(self):
+        result = {}
         for v in self.S:
             print(v.getName() + ": " + str(v.d))
+            result[v.getName()] = v.d
+        return result
 
 
 # perhaps Extract-Min should be implemented in graph_functions,
@@ -99,7 +102,7 @@ class Dijkstra(GraphAlgorithm):
 #     return q.pop(0), q
 
 
-args = dijkstraChallenge1()
-d = Dijkstra(args[0], args[1], args[2])
-d.doComplete()
-d.printS()
+# args = dijkstraChallenge1()
+# d = Dijkstra(args[0], args[1], args[2])
+# d.doComplete()
+# d.printS()
