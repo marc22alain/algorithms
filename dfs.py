@@ -24,6 +24,10 @@ DFS-VISIT(G, u)
 
 NOTE: CLRS do not show any code for accounting for edge status, yet they do colour
 the edges when illustrating how the algorithm works.
+
+The DFS class quietly adds two attributes to the Node class: Node.colour; Node.pi.
+It also adds one attribute to the Edge class: Edge.explored.
+Alternative would be to explicitly sub-class the Node and Edge classes.
 """
 
 
@@ -41,12 +45,16 @@ class DFS(GraphAlgorithm):
         super(DFS, self).__init__(graph)
 
     def _doPrep(self):
+        """ The DFS class quietly adds two attributes to the Node class: Node.colour; Node.pi.
+        It adds one attribute to the Edge class: Edge.explored. """
         self.vertex_list = list(self.graph.getNodes().values())
         self.next_vertex = self.vertex_list[0]
         self.next_vertex_index = 1
         for vertex in self.vertex_list:
             vertex.colour = WHITE
             vertex.pi = None
+            vertex.discovery_time = None
+            vertex.finish_time = None
         self.iterators.append(self.DFSstart())
         for e in self.graph.edges:
              e.explored = False
@@ -57,6 +65,7 @@ class DFS(GraphAlgorithm):
         served = False
         while not served:
             try:
+                # We are treating the list of iterators as a stack.
                 result = next(self.iterators[-1])
                 served = True
             except StopIteration:
@@ -93,21 +102,3 @@ class DFS(GraphAlgorithm):
 
     def assertValid(self):
         pass
-
-
-    # trying to do a single step at a time
-    # def doStep(self):
-    # 	yield self.time
-    # 	while len(self.lists[0]) == 0:
-    # 		self.lists.pop(0)
-    # 	u = self.lists[0].pop(0)
-    # 	if u.colour == WHITE:
-    # 		self.time += 1
-
-
-
-
-
-
-
-

@@ -4,8 +4,6 @@ from math import *
 from gne import Graph, Node, Edge
 import random
 
-from dfs import DFS
-
 from tests import make_graphs
 
 from menubar import MenuBar
@@ -22,6 +20,7 @@ class Application(Frame):
         self.graph = Graph()
         self.slots = self.makeSlots()
         self.nodes = {}
+        self.algorithm = None
         self.drawGraph(0)
 
 
@@ -134,10 +133,8 @@ class Application(Frame):
 
 
     def drawGraph(self, frame_num=1):
+        # first clear the canvas of the previous step's drawing
         self.canvas.delete("graph")
-        # check what type of graph is defined
-        directed = self.directed_check_var.get()
-        weighted = self.weighted_edge_check_var.get()
 
         circle_rad = self.slot_options["circle"] / 2
         for k, key in enumerate(self.slots):
@@ -150,23 +147,42 @@ class Application(Frame):
                     self.canvas.create_oval(x - circle_rad, y - circle_rad, x + circle_rad, y + circle_rad, outline="#333")
             else:
                 # draw the node
-                try:
-                    colour = node.colour
-                except AttributeError:
-                    colour = "black"
-                self.canvas.create_oval(x - circle_rad, y - circle_rad, x + circle_rad, y + circle_rad, outline="#fff", tag="graph", fill=colour)
-                self.canvas.create_text(x, y - circle_rad * 2, text=slot["node"].getName(), fill="white", tag="graph")
+                self.drawNode(self.canvas, slot, node, x, y, circle_rad)
 
                 # then draw the edges that it sources
                 for edge in node.getOutEdges():
                     adj_x, adj_y = self.getWeightLocationAdj(edge)
                     target_node = edge.getEnds()[1]
                     t_x, t_y = self.slots[self.nodes[target_node.getName()]]["coords"]
-                    self.canvas.create_line(x, y, t_x, t_y, fill="#ff5500", tag="graph")
-                    if weighted == True:
-                        self.canvas.create_text(((x + t_x) / 2) + adj_x, ((y + t_y) / 2) - adj_y, text=edge.getWeight(), fill="#ff5500", tag="graph")
-                    if directed == True:
-                        self.drawArrowHeads(edge)
+                    self.drawEdge(self.canvas, x, y, t_x, t_y, adj_x, adj_y)
+                    # self.canvas.create_line(x, y, t_x, t_y, fill="#ff5500", tag="graph")
+                    # if weighted == True:
+                    #     self.canvas.create_text(((x + t_x) / 2) + adj_x, ((y + t_y) / 2) - adj_y, text=edge.getWeight(), fill="#ff5500", tag="graph")
+                    # if directed == True:
+                    #     self.drawArrowHeads(edge)
+
+
+    def drawNode(self, canvas, slot, node, x, y, circle_rad):
+        if self.algorithm is not None:
+            self.algorithm.drawNode(canvas, slot, node, x, y, circle_rad)
+        else:
+            self.canvas.create_oval(x - circle_rad, y - circle_rad, x + circle_rad, y + circle_rad, outline="#fff", tag="graph")
+            self.canvas.create_text(x, y - circle_rad * 2, text=slot["node"].getName(), fill="white", tag="graph")
+
+
+    def drawEdge(self, canvas, x, y, t_x, t_y, adj_x, adj_y):
+        # check what type of graph is defined; this can change at any time
+        if self.algorithm is not None:
+            self.algorithm.drawEdge(canvas, x, y, t_x, t_y, adj_x, adj_y)
+        else:
+            directed = self.directed_check_var.get()
+            weighted = self.weighted_edge_check_var.get()
+            
+            self.canvas.create_line(x, y, t_x, t_y, fill="#ff5500", tag="graph")
+            if weighted == True:
+                self.canvas.create_text(((x + t_x) / 2) + adj_x, ((y + t_y) / 2) - adj_y, text=edge.getWeight(), fill="#ff5500", tag="graph")
+            if directed == True:
+                self.drawArrowHeads(edge)
 
 
     def addNode(self):
@@ -211,7 +227,7 @@ class Application(Frame):
         slots = list(self.slots.keys())
         for slot in slots:
             self.slots[slot]["node"] = None
-        self.dfs = None
+        self.algorithm = None
         self.drawGraph()
 
     def addEdge(self):
@@ -303,16 +319,25 @@ class Application(Frame):
             self.graph = graph
         self.drawGraph()
 
-    def addDoStepButton(self, message, method):
-        # self.graphmaker.addDoStepButton("Do one DFS step", self.doDFSStep)
-        # adding the DOSTEP control
+
+    def addDoStepButton(self, message):
         # separator
         self.row_num += 1
         ttk.Separator(self.DefineFrame,orient=HORIZONTAL).grid(row=self.row_num, column=0, columnspan=2, sticky="ew", pady=10)
-        # do DFS step
+        # do SOME algorithm step
         self.row_num += 1
-        self.do_step_button = Button(self.DefineFrame,text=message,command=method, width=28)
+        self.do_step_button = Button(self.DefineFrame,text=message,command=self.drawStep, width=28)
         self.do_step_button.grid(row=self.row_num, column=0, columnspan=2, pady=5)
+
+
+    def drawStep(self):
+        self.algorithm.doStep()
+        self.drawGraph()
+
+
+    def registerAlgorithm(self, algorithm):
+        self.algorithm = algorithm(self.graph)
+        self.addDoStepButton(self.algorithm.do_step_message)
 
 
 app = Application()
