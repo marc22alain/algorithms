@@ -9,6 +9,7 @@ from tkinter import ttk
 
 from dfs_draw import DFSdraw
 from dijkstra_draw import DijkstraDraw
+from kruskal_draw import KruskalDraw
 
 class MenuBar(object):
     def __init__(self, graphmaker):
@@ -32,6 +33,7 @@ class MenuBar(object):
         self.menuBar.add_cascade(label='Algorithms', menu=self.sub_menu_algos)
         self.sub_menu_algos.add_command(label='DFS', command=self.loadDFS)
         self.sub_menu_algos.add_command(label='Dijkstra', command=self.loadDijkstra)
+        self.sub_menu_algos.add_command(label='Kruskal', command=self.loadKruskal)
         # self.sub_menu_algos.add_command(label='Floyd-Warshall', command=self.loadFloydWarshall)
 
 
@@ -41,6 +43,8 @@ class MenuBar(object):
     def loadDijkstra(self):
         self.graphmaker.registerAlgorithm(DijkstraDraw)
 
+    def loadKruskal(self):
+        self.graphmaker.registerAlgorithm(KruskalDraw)
 
     def loadFloydWarshall(self):
         print("algorithm")

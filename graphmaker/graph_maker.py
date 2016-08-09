@@ -154,7 +154,7 @@ class Application(Frame):
                     adj_x, adj_y = self.getWeightLocationAdj(edge)
                     target_node = edge.getEnds()[1]
                     t_x, t_y = self.slots[self.nodes[target_node.getName()]]["coords"]
-                    self.drawEdge(self.canvas, x, y, t_x, t_y, adj_x, adj_y)
+                    self.drawEdge(self.canvas, edge, x, y, t_x, t_y, adj_x, adj_y)
                     # self.canvas.create_line(x, y, t_x, t_y, fill="#ff5500", tag="graph")
                     # if weighted == True:
                     #     self.canvas.create_text(((x + t_x) / 2) + adj_x, ((y + t_y) / 2) - adj_y, text=edge.getWeight(), fill="#ff5500", tag="graph")
@@ -170,10 +170,10 @@ class Application(Frame):
             self.canvas.create_text(x, y - circle_rad * 2, text=slot["node"].getName(), fill="white", tag="graph")
 
 
-    def drawEdge(self, canvas, x, y, t_x, t_y, adj_x, adj_y):
+    def drawEdge(self, canvas, edge, x, y, t_x, t_y, adj_x, adj_y):
         # check what type of graph is defined; this can change at any time
         if self.algorithm is not None:
-            self.algorithm.drawEdge(canvas, x, y, t_x, t_y, adj_x, adj_y)
+            self.algorithm.drawEdge(canvas, edge, x, y, t_x, t_y, adj_x, adj_y)
         else:
             directed = self.directed_check_var.get()
             weighted = self.weighted_edge_check_var.get()
@@ -227,7 +227,7 @@ class Application(Frame):
         slots = list(self.slots.keys())
         for slot in slots:
             self.slots[slot]["node"] = None
-        self.algorithm = None
+        type(self.algorithm).__class__(self.graph)
         self.drawGraph()
 
     def addEdge(self):
@@ -321,16 +321,24 @@ class Application(Frame):
 
 
     def addDoStepButton(self, message):
+        # TODO: handle case when a DOSTEP button already is displayed
+        try:
+            type(self.do_step_button) == type(Button(self.DefineFrame))
+            self.do_step_button = Button(self.DefineFrame,text=message,command=self.drawStep, width=28)
         # separator
-        self.row_num += 1
-        ttk.Separator(self.DefineFrame,orient=HORIZONTAL).grid(row=self.row_num, column=0, columnspan=2, sticky="ew", pady=10)
-        # do SOME algorithm step
-        self.row_num += 1
-        self.do_step_button = Button(self.DefineFrame,text=message,command=self.drawStep, width=28)
-        self.do_step_button.grid(row=self.row_num, column=0, columnspan=2, pady=5)
+        except:
+            self.row_num += 1
+            ttk.Separator(self.DefineFrame,orient=HORIZONTAL).grid(row=self.row_num, column=0, columnspan=2, sticky="ew", pady=10)
+            # do SOME algorithm step
+            self.row_num += 1
+            self.do_step_button = Button(self.DefineFrame,text=message,command=self.drawStep, width=28)
+            self.do_step_button.grid(row=self.row_num, column=0, columnspan=2, pady=5)
 
 
     def drawStep(self):
+#        if self.algorithm == None:
+##            TODO: handle case where user wants to use the same algorithm
+#            pass
         self.algorithm.doStep()
         self.drawGraph()
 

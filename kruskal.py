@@ -58,9 +58,10 @@ class Kruskal(GraphAlgorithm):
 
     def _doPrep(self):
         """
-        Does two things:
+        Does three things:
             - makes a set forest
             - sorts the edges by weight
+            - decorates the Edge class with E.included, for later use by graph_maker
         """
         # need to assert that the iterable delivers Nodes !
         # in the meantime, assume its a dict
@@ -69,16 +70,22 @@ class Kruskal(GraphAlgorithm):
             ds_all.makeSet(n)
         # have not even bothered to wrap this in a pseudo-implementation of a BST
         self.ordered_edges = sorted(list(self.graph.getEdges()), key=lambda edge: edge.getWeight())
+        for e in self.graph.getEdges():
+            e.included = False
 
 
     def doStep(self):
-        e = self.ordered_edges.pop(0)
-        u = e.getEnds()[0]
-        v = e.getEnds()[1]
-        if ds_all.findSet(u) is not ds_all.findSet(v):
-            ds_all.union(u, v)
-            self.A.add(e)
-        return self.A
+        try:
+            e = self.ordered_edges.pop(0)
+            u = e.getEnds()[0]
+            v = e.getEnds()[1]
+            if ds_all.findSet(u) is not ds_all.findSet(v):
+                ds_all.union(u, v)
+                self.A.add(e)
+                e.included = True
+            return True
+        except IndexError:
+            return False
 
 
     def doComplete(self):
@@ -88,6 +95,7 @@ class Kruskal(GraphAlgorithm):
             if ds_all.findSet(u) is not ds_all.findSet(v):
                 ds_all.union(u, v)
                 self.A.add(e)
+                e.included = True
         return self.A
 
 

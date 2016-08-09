@@ -16,5 +16,5 @@ class DFSdraw(DFS):
             canvas.create_text(x, y - circle_rad * 2, text=str(node.discovery_time)+"|"+str(node.finish_time), fill="white", tag="graph")
 
 
-    def drawEdge(self, canvas, x, y, t_x, t_y, adj_x, adj_y):
+    def drawEdge(self, canvas, edge, x, y, t_x, t_y, adj_x, adj_y):
         canvas.create_line(x, y, t_x, t_y, fill="#ff5500", tag="graph")
