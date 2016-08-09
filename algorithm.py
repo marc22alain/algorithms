@@ -13,7 +13,7 @@ class Algorithm:
 
 
     @abc.abstractmethod
-    def doStep(self):
+    def doStep(self) -> bool:
         """
         Assuming that there is one loop that drives the algorithm.
         Data structures are in a new state after each step, and we want to see their new state.
