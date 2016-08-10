@@ -1,9 +1,10 @@
 from kruskal import Kruskal
 
 class KruskalDraw(Kruskal):
+    Kruskal.do_step_message = "Do one Kruskal step"
+
     def __init__(self, graph):
         super(KruskalDraw, self).__init__(graph)
-        self.do_step_message = "Do one Kruskal step"
 
 
     def drawNode(self, canvas, slot, node, x, y, circle_rad):

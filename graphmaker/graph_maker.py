@@ -21,6 +21,7 @@ class Application(Frame):
         self.slots = self.makeSlots()
         self.nodes = {}
         self.algorithm = None
+        self.algo_worker = None
         self.drawGraph(0)
 
 
@@ -163,8 +164,8 @@ class Application(Frame):
 
 
     def drawNode(self, canvas, slot, node, x, y, circle_rad):
-        if self.algorithm is not None:
-            self.algorithm.drawNode(canvas, slot, node, x, y, circle_rad)
+        if self.algo_worker is not None:
+            self.algo_worker.drawNode(canvas, slot, node, x, y, circle_rad)
         else:
             self.canvas.create_oval(x - circle_rad, y - circle_rad, x + circle_rad, y + circle_rad, outline="#fff", tag="graph")
             self.canvas.create_text(x, y - circle_rad * 2, text=slot["node"].getName(), fill="white", tag="graph")
@@ -172,8 +173,8 @@ class Application(Frame):
 
     def drawEdge(self, canvas, edge, x, y, t_x, t_y, adj_x, adj_y):
         # check what type of graph is defined; this can change at any time
-        if self.algorithm is not None:
-            self.algorithm.drawEdge(canvas, edge, x, y, t_x, t_y, adj_x, adj_y)
+        if self.algo_worker is not None:
+            self.algo_worker.drawEdge(canvas, edge, x, y, t_x, t_y, adj_x, adj_y)
         else:
             directed = self.directed_check_var.get()
             weighted = self.weighted_edge_check_var.get()
@@ -227,7 +228,7 @@ class Application(Frame):
         slots = list(self.slots.keys())
         for slot in slots:
             self.slots[slot]["node"] = None
-        type(self.algorithm).__class__(self.graph)
+        self.algo_worker = None
         self.drawGraph()
 
     def addEdge(self):
@@ -336,15 +337,17 @@ class Application(Frame):
 
 
     def drawStep(self):
-#        if self.algorithm == None:
+        if self.algo_worker == None:
+            self.algo_worker = self.algorithm(self.graph)
+
 ##            TODO: handle case where user wants to use the same algorithm
 #            pass
-        self.algorithm.doStep()
+        self.algo_worker.doStep()
         self.drawGraph()
 
 
     def registerAlgorithm(self, algorithm):
-        self.algorithm = algorithm(self.graph)
+        self.algorithm = algorithm
         self.addDoStepButton(self.algorithm.do_step_message)
 
 

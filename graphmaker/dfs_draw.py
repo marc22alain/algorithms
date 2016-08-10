@@ -1,9 +1,11 @@
 from dfs import DFS
 
 class DFSdraw(DFS):
+
+    DFS.do_step_message = "Do one DFS step"
+
     def __init__(self, graph):
         super(DFSdraw, self).__init__(graph)
-        self.do_step_message = "Do one DFS step"
 
 
     def drawNode(self, canvas, slot, node, x, y, circle_rad):

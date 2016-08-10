@@ -1,9 +1,10 @@
 from dijkstra import Dijkstra
 
 class DijkstraDraw(Dijkstra):
+    Dijkstra.do_step_message = "Do one Dijkstra step"
+    
     def __init__(self, graph):
-        super(DijkstraDraw, self).__init__(graph)
-        self.do_step_message = "Do one Dijkstra step"
+        super(DijkstraDraw, self).__init__(graph, [], list(graph.getNodes().values())[0])
 
 
     def drawNode(self, canvas, slot, node, x, y, circle_rad):
