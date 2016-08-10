@@ -60,18 +60,21 @@ class DFS(GraphAlgorithm):
              e.explored = False
 
 
-    def doStep(self):
-        print("number of iterators = " + str(len(self.iterators)))
-        served = False
-        while not served:
+    def doStep(self) -> bool:
+        # print("number of iterators = " + str(len(self.iterators)))
+        while True:
             try:
                 # We are treating the list of iterators as a stack.
                 result = next(self.iterators[-1])
-                served = True
+                # when every node has been discovered & finished
+                if self.time == 2 * len(self.graph.getNodes()):
+                    return False
+                # otherwise continue
+                else:
+                    return True
             except StopIteration:
                 self.iterators.pop(-1)
-                print("popping one iterator")
-        return result
+                # print("popping one iterator")
 
 
     def DFSstart(self):

@@ -74,7 +74,7 @@ class Kruskal(GraphAlgorithm):
             e.included = False
 
 
-    def doStep(self):
+    def doStep(self) -> bool:
         try:
             e = self.ordered_edges.pop(0)
             u = e.getEnds()[0]
@@ -83,9 +83,12 @@ class Kruskal(GraphAlgorithm):
                 ds_all.union(u, v)
                 self.A.add(e)
                 e.included = True
-            return True
         except IndexError:
             return False
+        if len(self.A) == len(self.graph.getNodes()) - 1:
+            return False
+        else:
+            return True
 
 
     def doComplete(self):

@@ -221,6 +221,7 @@ class Application(Frame):
                 slots[(i,j)] = { "coords" : (i * spacing, j * spacing), "node" : None}
         return slots
 
+
     def clearAll(self):
         """ Delete all graph elements, to start anew. """
         self.graph = Graph()
@@ -230,6 +231,7 @@ class Application(Frame):
             self.slots[slot]["node"] = None
         self.algo_worker = None
         self.drawGraph()
+
 
     def addEdge(self):
         source_name = self.source_node_name_var.get()
@@ -247,11 +249,13 @@ class Application(Frame):
         self.source_node_name_input.delete(0, "end")
         self.target_node_name_input.delete(0, "end")
 
+
     def selectNode(self, event):
         """ canvas click event handler """
         spacing = self.slot_options["spacing"]
         slot_select = ((event.x + (spacing / 2)) // spacing, (event.y + (spacing / 2)) // spacing)
         self.node_to_move = self.slots[slot_select]["node"]
+
 
     def releaseNode(self, event):
         """ canvas click event handler """
@@ -267,6 +271,7 @@ class Application(Frame):
             self.nodes[self.node_to_move.getName()] = slot_select
             self.drawGraph()
 
+
     def moveNode(self, event):
         """ canvas click event handler """
         self.canvas.delete("in_motion")
@@ -275,6 +280,7 @@ class Application(Frame):
         self.canvas.create_oval(x - circle_rad, y - circle_rad, x + circle_rad, y + circle_rad, outline="#999900", tag="in_motion")
         if self.node_to_move != None:
             self.canvas.create_text(x, y - circle_rad * 2, text=self.node_to_move.getName(), fill="#999900", tag="in_motion")
+
 
     def getWeightLocationAdj(self, edge):
         """ Helper method for drawGraph; returns magic numbers for placing the edge weight w/r/t the edge. """
@@ -305,6 +311,7 @@ class Application(Frame):
         # print "acos", str(rad_x)
         # print "asin", str(rad_y)
 
+
     def printElements(self):
         self.graph.printElements()
 
@@ -321,18 +328,19 @@ class Application(Frame):
         self.drawGraph()
 
 
-    def addDoStepButton(self, message):
-        # TODO: handle case when a DOSTEP button already is displayed
+    def addDoStepButton(self):
+        # handle the case when a DOSTEP button already is displayed
         try:
             type(self.do_step_button) == type(Button(self.DefineFrame))
-            self.do_step_button = Button(self.DefineFrame,text=message,command=self.drawStep, width=28)
-        # separator
+            self.do_step_button.config(text=self.algorithm.do_step_message,command=self.drawStep,bg="#00d632")
+        # create a new button
         except:
+            # separator
             self.row_num += 1
-            ttk.Separator(self.DefineFrame,orient=HORIZONTAL).grid(row=self.row_num, column=0, columnspan=2, sticky="ew", pady=10)
+            self.do_step_button_separator = ttk.Separator(self.DefineFrame,orient=HORIZONTAL).grid(row=self.row_num, column=0, columnspan=2, sticky="ew", pady=10)
             # do SOME algorithm step
             self.row_num += 1
-            self.do_step_button = Button(self.DefineFrame,text=message,command=self.drawStep, width=28)
+            self.do_step_button = Button(self.DefineFrame,text=self.algorithm.do_step_message,command=self.drawStep, width=28,bg="#00d632")
             self.do_step_button.grid(row=self.row_num, column=0, columnspan=2, pady=5)
 
 
@@ -340,15 +348,15 @@ class Application(Frame):
         if self.algo_worker == None:
             self.algo_worker = self.algorithm(self.graph)
 
-##            TODO: handle case where user wants to use the same algorithm
-#            pass
-        self.algo_worker.doStep()
+        result = self.algo_worker.doStep()
+        if result == False:
+            self.do_step_button.config(text="Procedure complete",command=None,bg="#777")
         self.drawGraph()
 
 
     def registerAlgorithm(self, algorithm):
         self.algorithm = algorithm
-        self.addDoStepButton(self.algorithm.do_step_message)
+        self.addDoStepButton()
 
 
 app = Application()
