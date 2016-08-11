@@ -1,11 +1,13 @@
 import abc
 
 
-class Algorithm:
+class Algorithm(metaclass=abc.ABCMeta):
 
-    __metaclass__ = abc.ABCMeta
+    # __metaclass__ = abc.ABCMeta
 
     operations_count = 0
+
+    has_terminated = False
 
     @abc.abstractmethod
     def assertValid(self):
@@ -13,7 +15,7 @@ class Algorithm:
 
 
     @abc.abstractmethod
-    def doStep(self) -> bool:
+    def doStep(self):
         """
         Assuming that there is one loop that drives the algorithm.
         Data structures are in a new state after each step, and we want to see their new state.
@@ -33,5 +35,21 @@ class Algorithm:
     def _doPrep(self):
         """
         Assuming that there is some preliminary work that is not of interest to watch occur.
+        """
+        pass
+
+
+    def hasTerminated(self) -> bool:
+        """
+        Returns whether the algorithm has terminated.
+        """
+        return self.has_terminated
+
+
+    @abc.abstractmethod
+    def _checkTermination(self):
+        """
+        Useful when the algorithm is run with doStep(), the algorithm will evaluate whether
+        it has terminated, and update the 'is_complete' attribute if required.
         """
         pass

@@ -1,0 +1,4 @@
+
+
+class AlgorithmTerminatedException(Exception):
+	pass

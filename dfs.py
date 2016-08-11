@@ -32,6 +32,7 @@ Alternative would be to explicitly sub-class the Node and Edge classes.
 
 
 from graph_algorithm import GraphAlgorithm
+from algorithm_exceptions import AlgorithmTerminatedException
 
 # colour constants ... I don't yet know what will work best
 WHITE = "white"
@@ -47,6 +48,7 @@ class DFS(GraphAlgorithm):
     def _doPrep(self):
         """ The DFS class quietly adds two attributes to the Node class: Node.colour; Node.pi.
         It adds one attribute to the Edge class: Edge.explored. """
+        # TODO: if there is a node called 'root', place it at the head of the list
         self.vertex_list = list(self.graph.getNodes().values())
         self.next_vertex = self.vertex_list[0]
         self.next_vertex_index = 1
@@ -60,21 +62,22 @@ class DFS(GraphAlgorithm):
              e.explored = False
 
 
-    def doStep(self) -> bool:
+    def doStep(self):
         # print("number of iterators = " + str(len(self.iterators)))
-        while True:
-            try:
-                # We are treating the list of iterators as a stack.
-                result = next(self.iterators[-1])
-                # when every node has been discovered & finished
-                if self.time == 2 * len(self.graph.getNodes()):
-                    return False
-                # otherwise continue
-                else:
-                    return True
-            except StopIteration:
-                self.iterators.pop(-1)
-                # print("popping one iterator")
+        if self.hasTerminated() is False:
+            served = False
+            while served == False:
+                try:
+                    # We are treating the list of iterators as a stack.
+                    result = next(self.iterators[-1])
+                    served = True
+                except StopIteration:
+                    self.iterators.pop(-1)
+                    # print("popping one iterator")
+            # now check if done
+            self._checkTermination()
+        else:
+            raise AlgorithmTerminatedException("DFS has already terminated")
 
 
     def DFSstart(self):
@@ -83,6 +86,7 @@ class DFS(GraphAlgorithm):
             if vertex.colour == WHITE:
                 self.iterators.append(self.DFSvisit(vertex))
                 yield self.time
+
 
     def DFSvisit(self, vertex):
         self.time += 1
@@ -101,7 +105,14 @@ class DFS(GraphAlgorithm):
 
 
     def doComplete(self):
-        self.DFSstart()
+        while self.hasTerminated is False:
+            self.doStep
 
     def assertValid(self):
         pass
+
+    def _checkTermination(self):
+        # DFS has terminated when every node has been discovered and finished.
+        if self.time == 2 * len(self.graph.getNodes()):
+            self.has_terminated = True
+

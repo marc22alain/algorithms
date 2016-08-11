@@ -8,6 +8,8 @@ from tests import make_graphs
 
 from menubar import MenuBar
 
+from algorithm_exceptions import AlgorithmTerminatedException
+
 
 class Application(Frame):
     def __init__(self, master=None):
@@ -346,12 +348,20 @@ class Application(Frame):
 
 
     def drawStep(self):
+        # check whether to initialize the algorithm
         if self.algo_worker == None:
+            print("init algo_worker")
             self.algo_worker = self.algorithm(self.graph)
-
-        result = self.algo_worker.doStep()
-        if result == False:
-            self.do_step_button.config(text="Procedure complete",command=None,bg="#777")
+            self.do_step_button.config(text=self.algorithm.do_step_message,command=self.drawStep,bg="#777")
+        # now attempt to run one step
+        try:
+            self.algo_worker.doStep()
+        except AlgorithmTerminatedException as e:
+            print(e)
+        # determine whether we are done and update the interface accordingly
+        if self.algo_worker.hasTerminated() == True:
+            self.do_step_button.config(text="Procedure complete",bg="#777")
+        # finally update the view
         self.drawGraph()
 
 
@@ -359,6 +369,9 @@ class Application(Frame):
         self.algorithm = algorithm
         self.addDoStepButton()
 
+
+    def doNothing(self):
+        pass
 
 app = Application()
 app.master.title("Graph maker")

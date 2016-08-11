@@ -87,6 +87,7 @@ class Dijkstra(GraphAlgorithm):
             for edge in u.getOutEdges():
                 relax(u, edge.getEnds()[1], edge.getWeight())
 
+
     def printS(self):
         result = {}
         for v in self.S:
@@ -95,14 +96,8 @@ class Dijkstra(GraphAlgorithm):
         return result
 
 
-# perhaps Extract-Min should be implemented in graph_functions,
-# but would then need to pass an extra argument for the lambda key
-# def extractMin(Q):
-#     q = sorted(Q, key=lambda v: v.d)
-#     return q.pop(0), q
+    def _checkTermination(self):
+        # Dijkstra has terminated wehen the vertex set 'Q' is empty.
+        if len(self.Q) == 0:
+            self.has_terminated = True
 
-
-# args = dijkstraChallenge1()
-# d = Dijkstra(args[0], args[1], args[2])
-# d.doComplete()
-# d.printS()

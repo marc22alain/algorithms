@@ -30,6 +30,7 @@ MST-KRUSKAL (G, w)
 
 from graph_algorithm import GraphAlgorithm
 import disjoint_set as DJS
+from algorithm_exceptions import AlgorithmTerminatedException
 
 
 ds_all = DJS.DisjointSet()
@@ -75,20 +76,20 @@ class Kruskal(GraphAlgorithm):
 
 
     def doStep(self) -> bool:
-        try:
-            e = self.ordered_edges.pop(0)
-            u = e.getEnds()[0]
-            v = e.getEnds()[1]
-            if ds_all.findSet(u) is not ds_all.findSet(v):
-                ds_all.union(u, v)
-                self.A.add(e)
-                e.included = True
-        except IndexError:
-            return False
-        if len(self.A) == len(self.graph.getNodes()) - 1:
-            return False
+        if self.hasTerminated() is False:
+            served = False
+            while served == False:
+                e = self.ordered_edges.pop(0)
+                u = e.getEnds()[0]
+                v = e.getEnds()[1]
+                if ds_all.findSet(u) is not ds_all.findSet(v):
+                    ds_all.union(u, v)
+                    self.A.add(e)
+                    e.included = True
+                    served = True
+            self._checkTermination()
         else:
-            return True
+            raise AlgorithmTerminatedException("Kruskal has already terminated")
 
 
     def doComplete(self):
@@ -108,3 +109,11 @@ class Kruskal(GraphAlgorithm):
         for e in self.A:
             total += e.getWeight()
         return total, num_edges
+
+
+    def _checkTermination(self):
+        # Kruskal has terminated there is an MST, when the number of edges is one less than
+        # the number of nodes.
+        if len(self.A) == len(self.graph.getNodes()) - 1:
+            self.has_terminated = True
+
