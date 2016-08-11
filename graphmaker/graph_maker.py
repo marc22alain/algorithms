@@ -321,6 +321,7 @@ class Application(Frame):
         if self.graph_name_var.get() not in graphs:
             print(graphs)
         else:
+            self.clearAll()
             graph = eval("make_graphs." + self.graph_name_var.get() + "()")["graph"]
             for n in list(graph.getNodes().values()):
                 self._addNode(n)
