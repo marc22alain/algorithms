@@ -53,6 +53,7 @@ class DFS(GraphAlgorithm):
         """ The DFS class quietly adds two attributes to the Node class: Node.colour; Node.pi.
         It adds one attribute to the Edge class: Edge.explored. """
         self.vertex_list = list(self.graph.getNodes().values())
+        self.selectFirstVertex()
         self.next_vertex = self.vertex_list[0]
         self.next_vertex_index = 1
         for vertex in self.vertex_list:
@@ -119,5 +120,7 @@ class DFS(GraphAlgorithm):
 
 
     def selectFirstVertex(self, vertex: str ="root"):
-        # TODO: if there is a node called 'root', place it at the head of the list
-        pass
+        # DEFAULT: if there is a node called 'root', place it at the head of the list
+        if vertex in self.graph.getNodes():
+            self.vertex_list.remove(self.graph.getNodes()["root"])
+            self.vertex_list.insert(0, self.graph.getNodes()["root"])
