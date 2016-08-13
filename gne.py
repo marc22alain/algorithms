@@ -142,7 +142,10 @@ class Node(object):
             ends = edge.getEnds()
             neighbours.add(ends[0])
             neighbours.add(ends[1])
-        neighbours.remove(self)
+        try:
+            neighbours.remove(self)
+        except KeyError:
+            pass
         return neighbours
 
 

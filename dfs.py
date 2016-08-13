@@ -35,11 +35,15 @@ from graph_algorithm import GraphAlgorithm
 from algorithm_exceptions import AlgorithmTerminatedException
 
 # colour constants ... I don't yet know what will work best
-WHITE = "white"
-GRAY = "#666"
-BLACK = "black"
 
 class DFS(GraphAlgorithm):
+
+
+    WHITE = "white"
+    GRAY = "#666"
+    BLACK = "black"
+
+
     def __init__(self, graph):
         self.time = 0
         self.iterators = []
@@ -48,18 +52,15 @@ class DFS(GraphAlgorithm):
     def _doPrep(self):
         """ The DFS class quietly adds two attributes to the Node class: Node.colour; Node.pi.
         It adds one attribute to the Edge class: Edge.explored. """
-        # TODO: if there is a node called 'root', place it at the head of the list
         self.vertex_list = list(self.graph.getNodes().values())
         self.next_vertex = self.vertex_list[0]
         self.next_vertex_index = 1
         for vertex in self.vertex_list:
-            vertex.colour = WHITE
+            vertex.colour = self.WHITE
             vertex.pi = None
             vertex.discovery_time = None
             vertex.finish_time = None
         self.iterators.append(self.DFSstart())
-        for e in self.graph.edges:
-             e.explored = False
 
 
     def doStep(self):
@@ -83,7 +84,7 @@ class DFS(GraphAlgorithm):
     def DFSstart(self):
         for vertex in self.vertex_list:
             print("starting new tree")
-            if vertex.colour == WHITE:
+            if vertex.colour == self.WHITE:
                 self.iterators.append(self.DFSvisit(vertex))
                 yield self.time
 
@@ -91,22 +92,22 @@ class DFS(GraphAlgorithm):
     def DFSvisit(self, vertex):
         self.time += 1
         vertex.discovery_time = self.time
-        vertex.colour = GRAY
+        vertex.colour = self.GRAY
         for neighbour in vertex.getNeighbours():
-            if neighbour.colour == WHITE:
+            if neighbour.colour == self.WHITE:
                 neighbour.pi = vertex
                 self.iterators.append(self.DFSvisit(neighbour))
                 yield self.time
         yield self.time
-        vertex.colour = BLACK
+        vertex.colour = self.BLACK
         self.time += 1
         vertex.finish_time = self.time
         yield self.time
 
 
     def doComplete(self):
-        while self.hasTerminated is False:
-            self.doStep
+        while self.hasTerminated() is False:
+            self.doStep()
 
     def assertValid(self):
         pass
@@ -116,3 +117,7 @@ class DFS(GraphAlgorithm):
         if self.time == 2 * len(self.graph.getNodes()):
             self.has_terminated = True
 
+
+    def selectFirstVertex(self, vertex: str ="root"):
+        # TODO: if there is a node called 'root', place it at the head of the list
+        pass
