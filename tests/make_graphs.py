@@ -22,7 +22,7 @@ def makeSingleEdge():
     graph.addNode(b)
     graph.addEdge(Edge((a,b), 2))
     MSTweight = 2
-    return graph
+    return {"graph": graph}
 
 
 def makeTwoEdge():
@@ -36,7 +36,7 @@ def makeTwoEdge():
     graph.addEdge(Edge((a,b), 2))
     graph.addEdge(Edge((a,c), 1))
     MSTweight = 3
-    return graph
+    return {"graph": graph}
 
 
 def makeThreeEdge():
@@ -51,9 +51,9 @@ def makeThreeEdge():
     graph.addEdge(Edge((c,b), 4))
     graph.addEdge(Edge((a,c), 1))
     MSTweight = 5
-    return graph
+    return {"graph": graph}
 
-def dijkstraChallenge1():
+def makeDijkstraChallenge1():
     s = Node("s")
     t = Node("t")
     x = Node("x")
@@ -66,9 +66,9 @@ def dijkstraChallenge1():
     graph.addEdgeList([Edge((x, z), 4)])
     graph.addEdgeList([Edge((y, t), 3), Edge((y, x), 9), Edge((y, z), 2)])
     graph.addEdgeList([Edge((z, s), 7), Edge((z, x), 6)])
-    return graph, [], s, {"s": 0, "t": 8, "x": 9, "y": 5, "z": 7}
+    return {"graph":graph, "weights":[], "source":s, "shortest-paths":{"s": 0, "t": 8, "x": 9, "y": 5, "z": 7}}
 
-def bellmanFordChallenge2():
+def makeBellmanFordChallenge2():
     # since dijkstraChallenge1 == bellmanFordChallenge
     s = Node("s")
     t = Node("t")
@@ -82,15 +82,15 @@ def bellmanFordChallenge2():
     graph.addEdgeList([Edge((x, z), 4)])
     graph.addEdgeList([Edge((y, t), 3), Edge((y, x), 9), Edge((y, z), 2)])
     graph.addEdgeList([Edge((z, s), 7), Edge((z, x), 6)])
-    return graph, [], s, {"s": 0, "t": 8, "x": 9, "y": 5, "z": 7}
+    return {"graph":graph, "weights":[], "source":s, "shortest-paths":{"s": 0, "t": 8, "x": 9, "y": 5, "z": 7}}
 
-def DAG1():
+def makeDAG1():
     graph = Graph()
     graph.addEdge(Edge((Node('a'),Node('b'),2.0)))
-    return graph
+    return {"graph": graph}
 
 
-def uGraph1():
+def makeuGraph1():
     """Example from CLRS, figure 23.4, for demo of Kruskal's algorithm."""
     graph = Graph()
     a = Node('a')
@@ -119,7 +119,7 @@ def uGraph1():
     graph.addEdge(Edge((c,f),4.0))
     return {"graph": graph, "shortest_path": 37, "num_edges": 8}
 
-def rule1Violation1():
+def makeRule1Violation1():
     graph = Graph()
     a = Node("a")
     aa = Node("a")
@@ -128,7 +128,7 @@ def rule1Violation1():
     graph.addEdge(Edge((b,aa),1))
     return "oops"
 
-def directedWeightedNeg1():
+def makeDirectedWeightedNeg1():
     """Example from CLRS, figure 25.2, for use with APSP algorithms."""
     graph = Graph()
     n1 = Node('n1')
@@ -150,7 +150,7 @@ def directedWeightedNeg1():
     graph.addEdge(Edge((n4,n5),3.0))
     return {"graph": graph, "shortest_path": 0, "num_edges": 10}
 
-def simpleDirectedWeightedNeg1():
+def makeSimpleDirectedWeightedNeg1():
     graph = Graph()
     n1 = Node("n1")
     n3 = Node("n3")
@@ -172,7 +172,7 @@ def simpleDirectedWeightedNeg1():
                [0, 0, 0, 0, 0]]     
     return {"graph": graph, "shortest_path": shortest_paths, "num_edges": 6, "parents": parents}
 
-def triangles1():
+def makeTriangles1():
     graph = Graph()
     A = Node('A')
     C = Node('C')
@@ -190,7 +190,7 @@ def triangles1():
     return {"graph": graph, "shortest_path": 0, "num_edges": 6}
 
 
-def triangles2():
+def makeTriangles2():
     graph = Graph()
     a = Node('a')
     c = Node('c')
@@ -219,7 +219,7 @@ def triangles2():
     graph.addEdge(Edge((j,f),1.0))
     return {"graph": graph, "shortest_path": 0, "num_edges": 14}
 
-def multiCycle():
+def makeMultiCycle():
     graph = Graph()
     a = Node('a')
     c = Node('c')
@@ -247,7 +247,7 @@ def multiCycle():
     return {"graph": graph, "shortest_path": 0, "num_edges": 12}
 
 
-def tree():
+def makeTree():
     graph = Graph()
     a = Node('a')
     c = Node('c')

@@ -25,6 +25,7 @@ class Application(Frame):
         self.algorithm = None
         self.algo_worker = None
         self.drawGraph(0)
+        self.do_step_button_message = StringVar()
 
 
     def createSuperWidgets(self):
@@ -120,12 +121,20 @@ class Application(Frame):
         row_num += 1
         ttk.Separator(self.DefineFrame,orient=HORIZONTAL).grid(row=row_num, column=0, columnspan=2, sticky="ew", pady=10)
 
+        graphs = []
+        for graph in dir(make_graphs):
+            if graph[:4] == "make":
+                graphs.append(graph)
+
         row_num += 1
-        self.graph_name_label = Label(self.DefineFrame, text='Graph name', width=13)
-        self.graph_name_label.grid(row=row_num, column=0)
+        # self.graph_name_label = Label(self.DefineFrame, text='Graph name', width=8)
+        # self.graph_name_label.grid(row=row_num, column=0)
         self.graph_name_var = StringVar()
-        self.graph_name_input = Entry(self.DefineFrame, textvariable=self.graph_name_var ,width=15)
-        self.graph_name_input.grid(row=row_num, column=1)
+        # self.graph_name_input = Entry(self.DefineFrame, textvariable=self.graph_name_var ,width=15)
+        self.graph_name_spin_input = Spinbox(self.DefineFrame, values=graphs, textvariable=self.graph_name_var, width=30)
+        # self.graph_name_input.grid(row=row_num, column=1)
+        # row_num += 1
+        self.graph_name_spin_input.grid(row=row_num, column=1)
 
         # load a graph
         row_num += 1
@@ -329,13 +338,16 @@ class Application(Frame):
                 self._addNode(n)
             self.graph = graph
         self.drawGraph()
+        # indicate that the algorithm could be ready to start
+        if self.algorithm is not None:
+            self.do_step_button_message.set(self.algorithm.do_step_message)
 
 
     def addDoStepButton(self):
         # handle the case when a DOSTEP button already is displayed
         try:
             type(self.do_step_button) == type(Button(self.DefineFrame))
-            self.do_step_button.config(text=self.algorithm.do_step_message,command=self.drawStep,bg="#00d632")
+            # self.do_step_button.config(bg="#00d632")
         # create a new button
         except:
             # separator
@@ -343,7 +355,7 @@ class Application(Frame):
             self.do_step_button_separator = ttk.Separator(self.DefineFrame,orient=HORIZONTAL).grid(row=self.row_num, column=0, columnspan=2, sticky="ew", pady=10)
             # do SOME algorithm step
             self.row_num += 1
-            self.do_step_button = Button(self.DefineFrame,text=self.algorithm.do_step_message,command=self.drawStep, width=28,bg="#00d632")
+            self.do_step_button = Button(self.DefineFrame,textvariable=self.do_step_button_message,command=self.drawStep, width=28,bg="#00d632")
             self.do_step_button.grid(row=self.row_num, column=0, columnspan=2, pady=5)
 
 
@@ -352,7 +364,9 @@ class Application(Frame):
         if self.algo_worker == None:
             print("init algo_worker")
             self.algo_worker = self.algorithm(self.graph)
-            self.do_step_button.config(text=self.algorithm.do_step_message,command=self.drawStep,bg="#777")
+            # in the event that "Procedure complete" is the current text
+            self.do_step_button_message.set(self.algorithm.do_step_message)
+            self.do_step_button.config(bg="#00d632")
         # now attempt to run one step
         try:
             self.algo_worker.doStep()
@@ -360,13 +374,17 @@ class Application(Frame):
             print(e)
         # determine whether we are done and update the interface accordingly
         if self.algo_worker.hasTerminated() == True:
-            self.do_step_button.config(text="Procedure complete",bg="#777")
+            self.do_step_button_message.set("Procedure complete")
+            self.do_step_button.config(bg="#777")
         # finally update the view
         self.drawGraph()
 
 
     def registerAlgorithm(self, algorithm):
+        """ User can select an algorithm at any time. 
+        This does not trigger any algorithm operation or even initialization. """
         self.algorithm = algorithm
+        self.do_step_button_message.set(self.algorithm.do_step_message)
         self.addDoStepButton()
 
 
