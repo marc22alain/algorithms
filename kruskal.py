@@ -20,7 +20,7 @@ MST-KRUSKAL (G, w)
 1    A = {empty}
 2    for each vertex in G.V
 3        MakeSet(v)
-4    sort the edges of G:E into nondecreasing order by weight w
+4    sort the edges of G.E into nondecreasing order by weight w
 5    for each edge (u,v) in G.E, taken in nondecreasing order by weight
 6        if FindSet(u) != FindSet(v)
 7            A = A union {(u,v)}

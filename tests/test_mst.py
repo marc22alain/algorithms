@@ -1,25 +1,32 @@
+"""
+Properties of MST that we should be testing for:
+    - that the tree spans all vertices
+    - that the edges in the tree are a minimum span, in number of edges and in weight of edges
+"""
+
+
 import os
 import sys
 import unittest
 
 from make_graphs import *
 
-path = os.getcwd().split("/")
-# print path
+# path = os.getcwd().split("/")
+# # print path
 
-new_path = ""
-for i in range(1, len(path) - 1):
-    new_path += "/" + path[i]
-# print new_path
+# new_path = ""
+# for i in range(1, len(path) - 1):
+#     new_path += "/" + path[i]
+# # print new_path
 
-sys.path.append(new_path)
+# sys.path.append(new_path)
 
 from kruskal import Kruskal
-# from prim import Prim
+from prim import Prim
+from prim_clrs import PrimCLRS
 from gne import Graph, Node, Edge
+from algorithm_exceptions import AlgorithmTerminatedException
 
-# TODO: figure out how to run this test suite with the class as an input
-graph_class = Kruskal
 
 class TestMST(unittest.TestCase):
 
@@ -27,80 +34,85 @@ class TestMST(unittest.TestCase):
         self.k1 = graph_class(self.makeSingleEdge())
         self.k2 = graph_class(self.makeTwoEdge())
         self.k3 = graph_class(self.makeThreeEdge())
-
+        if graph_class == PrimCLRS:
+            self.k1.doStep()
+            self.k2.doStep()
+            self.k3.doStep()
+        
 
     # @ unittest.skip("j")
     def test_singleStep(self):
         self.k1.doStep()
         total, num_edges = self.k1.getMSTdata()
-        self.assertEquals(total, 2)
-        self.assertEquals(num_edges, 1)
+        self.assertEqual(total, 2)
+        self.assertEqual(num_edges, 1)
 
         self.k2.doStep()
         total, num_edges = self.k2.getMSTdata()
-        self.assertEquals(total, 1)
-        self.assertEquals(num_edges, 1)
+        self.assertEqual(total, 1)
+        self.assertEqual(num_edges, 1)
 
         self.k3.doStep()
         total, num_edges = self.k3.getMSTdata()
-        self.assertEquals(total, 1)
-        self.assertEquals(num_edges, 1)
+        self.assertEqual(total, 1)
+        self.assertEqual(num_edges, 1)
 
     # @ unittest.skip("j")
     def test_twoSteps(self):
         self.k2.doStep()
         self.k2.doStep()
         total, num_edges = self.k2.getMSTdata()
-        self.assertEquals(total, 3)
-        self.assertEquals(num_edges, 2)
+        self.assertEqual(total, 3)
+        self.assertEqual(num_edges, 2)
 
         self.k3.doStep()
         self.k3.doStep()
         total, num_edges = self.k3.getMSTdata()
-        self.assertEquals(total, 5)
-        self.assertEquals(num_edges, 2)
+        self.assertEqual(total, 5)
+        self.assertEqual(num_edges, 2)
 
 
     # @ unittest.skip("j")
     def test_threeSteps(self):
         self.k3.doStep()
         self.k3.doStep()
-        self.k3.doStep()
+        # confirm that the assertion is raised
+        self.assertRaises(AlgorithmTerminatedException, self.k3.doStep)
         total, num_edges = self.k3.getMSTdata()
-        self.assertEquals(total, 5)
-        self.assertEquals(num_edges, 2)
+        self.assertEqual(total, 5)
+        self.assertEqual(num_edges, 2)
 
-    # @ unittest.skip("j")
+#    @ unittest.skip("j")
     def test_doComplete(self):
         self.k1.doComplete()
         total, num_edges = self.k1.getMSTdata()
-        self.assertEquals(total, 2)
-        self.assertEquals(num_edges, 1)
+        self.assertEqual(total, 2)
+        self.assertEqual(num_edges, 1)
 
         self.k2.doComplete()
         total, num_edges = self.k2.getMSTdata()
-        self.assertEquals(total, 3)
-        self.assertEquals(num_edges, 2)
+        self.assertEqual(total, 3)
+        self.assertEqual(num_edges, 2)
 
         self.k3.doComplete()
         total, num_edges = self.k3.getMSTdata()
-        self.assertEquals(total, 5)
-        self.assertEquals(num_edges, 2)
+        self.assertEqual(total, 5)
+        self.assertEqual(num_edges, 2)
 
 
-    # @ unittest.skip("j")
+#    @ unittest.skip("j")
     def test_CLRS_example1(self):
-        test_structure = uGraph1()
+        test_structure = makeuGraph1()
         edges = test_structure["graph"].getEdges()
-        self.assertEquals(len(edges), 14)
+        self.assertEqual(len(edges), 14)
         nodes = test_structure["graph"].getNodes()
-        self.assertEquals(len(nodes), 9)
+        self.assertEqual(len(nodes), 9)
 
         self.k4 = graph_class(test_structure["graph"])
         self.k4.doComplete()
         total, num_edges = self.k4.getMSTdata()
-        self.assertEquals(total, test_structure["shortest_path"])
-        self.assertEquals(num_edges, test_structure["num_edges"])
+        self.assertEqual(num_edges, test_structure["num_edges"])
+        self.assertEqual(total, test_structure["shortest_path"])
 
 
     def makeSingleEdge(self):
@@ -142,4 +154,13 @@ class TestMST(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    # repeat for next MST algorithm
+    graph_class = Kruskal
     unittest.main()
+    # repeat for next MST algorithm
+    graph_class = PrimCLRS
+    unittest.main()
+    # repeat for next MST algorithm
+    graph_class = Prim
+    unittest.main()
+    

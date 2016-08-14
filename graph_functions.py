@@ -37,7 +37,7 @@ def initializeSingleSource(G, s):
             n.pi = None
     s.d = 0
 
-def extractMin(Q, attribute):
+def extractMin(Q: list, attribute: str) -> (object, list):
     """CLRS defines as sorting list into a priority queue and extracting the 
     minimimum value.
     This general implementation uses the second argument (a string) to specify

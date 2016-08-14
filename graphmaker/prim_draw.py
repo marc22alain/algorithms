@@ -1,11 +1,11 @@
-from kruskal import Kruskal
+from prim import Prim
 
-class KruskalDraw(Kruskal):
+class PrimDraw(Prim):
     
-    do_step_message = "Do one Kruskal step"
+    do_step_message = "Do one Prim step"
 
     def __init__(self, graph):
-        super(KruskalDraw, self).__init__(graph)
+        super().__init__(graph)
 
 
     def drawNode(self, canvas, slot, node, x, y, circle_rad):

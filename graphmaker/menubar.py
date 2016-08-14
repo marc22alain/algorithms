@@ -10,6 +10,8 @@ from tkinter import ttk
 from dfs_draw import DFSdraw
 from dijkstra_draw import DijkstraDraw
 from kruskal_draw import KruskalDraw
+from prim_clrs_draw import PrimCLRSDraw
+from prim_draw import PrimDraw
 
 class MenuBar(object):
     def __init__(self, graphmaker):
@@ -34,6 +36,8 @@ class MenuBar(object):
         self.sub_menu_algos.add_command(label='DFS', command=self.loadDFS)
         self.sub_menu_algos.add_command(label='Dijkstra', command=self.loadDijkstra)
         self.sub_menu_algos.add_command(label='Kruskal', command=self.loadKruskal)
+        self.sub_menu_algos.add_command(label='Prim-CLRS', command=self.loadPrimCLRS)
+        self.sub_menu_algos.add_command(label='Prim', command=self.loadPrim)
         # self.sub_menu_algos.add_command(label='Floyd-Warshall', command=self.loadFloydWarshall)
 
 
@@ -45,6 +49,12 @@ class MenuBar(object):
 
     def loadKruskal(self):
         self.graphmaker.registerAlgorithm(KruskalDraw)
+
+    def loadPrimCLRS(self):
+        self.graphmaker.registerAlgorithm(PrimCLRSDraw)
+
+    def loadPrim(self):
+        self.graphmaker.registerAlgorithm(PrimDraw)
 
     def loadFloydWarshall(self):
         print("algorithm")
