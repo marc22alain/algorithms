@@ -35,6 +35,10 @@ class TestMST(unittest.TestCase):
         self.k2 = graph_class(self.makeTwoEdge())
         self.k3 = graph_class(self.makeThreeEdge())
         if graph_class == PrimCLRS:
+            # since PrimCLRS iterates over all the vertices to do its thing,
+            # it requires one more iteration than the algorithms iterating
+            # over the edges; these add one edge to the spanning tree
+            # per iteration, and for spanning tree S, |S| = |V| - 1
             self.k1.doStep()
             self.k2.doStep()
             self.k3.doStep()

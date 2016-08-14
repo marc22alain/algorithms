@@ -26,8 +26,10 @@ class Prim(GraphAlgorithm):
 
 
     def _doPrep(self):
+        # pick a starting vertex and add it to the list of covered vertices
         r = list(self.graph.getNodes().values())[0]
         self.covered.add(r)
+        # add all edges incident to the newly added vertex for consideration in the spanning tree
         self.ordered_edges = list(r.getAllEdges())
         for e in self.graph.getEdges():
             e.included = False
@@ -37,15 +39,20 @@ class Prim(GraphAlgorithm):
         if self.hasTerminated() == False:
             served = False
             while served == False:
+                # let's be greedy: pick the cheapest edge incident to the covered vertices, then see if we can use it
                 e, self.ordered_edges = extractMin(self.ordered_edges, "value")
                 u, v = e.getEnds()
+                # the algorithm is for undirected graphs, so the not-covered vertex might be either of u or v
+                # if both u and v are already covered, then the loop discards this edge and picks the next cheapest one
                 if u not in self.covered:
+                    # add u to the covered vertex set and add its incident edges for consideration in the spaning tree
                     self.covered.add(u)
-                    self.ordered_edges = list(set(self.ordered_edges + list(u.getAllEdges())))
+                    # this conversion from list to set to list ensures no edge duplicates in the final list
+                    self.ordered_edges = list(set(self.ordered_edges) | u.getAllEdges())
                     served = True
                 elif v not in self.covered:
                     self.covered.add(v)
-                    self.ordered_edges = list(set(self.ordered_edges + list(v.getAllEdges())))
+                    self.ordered_edges = list(set(self.ordered_edges) | v.getAllEdges())
                     served = True
             self.A.add(e)
             e.included = True
@@ -59,7 +66,7 @@ class Prim(GraphAlgorithm):
         	self.doStep()
 
 
-    # this method duplicates the same in Kruskal
+    # this method is common to all MST algorithms
     def getMSTdata(self):
         total = 0
         num_edges = len(self.A)

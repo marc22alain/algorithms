@@ -37,6 +37,7 @@ class PrimCLRS(GraphAlgorithm):
 
 
     def _doPrep(self):
+        # perform the tasks in first five lines of CLRS implementation
         for u in self.graph.getNodes().values():
             u.key = float("infinity")
             u.pi = None
@@ -47,6 +48,7 @@ class PrimCLRS(GraphAlgorithm):
 
     def doStep(self):
         if self.hasTerminated() == False:
+            # perform the outer loop, one iteration at a time, of the CLRS implementation
             u, self.Q = extractMin(self.Q, "key")
             neighbours = u.getAllEdges()
             for e in neighbours:
@@ -70,15 +72,15 @@ class PrimCLRS(GraphAlgorithm):
         	self.doStep()
 
 
-    # this method also exists in Kruskal
+    # this method is common to all MST algorithms
     def getMSTdata(self) -> (int, int):
         total = 0
         for v in list(self.graph.getNodes().values()):
         	total += v.key
+            # build the actual spanning tree now
         	for e in v.getAllEdges():
         		if (e.getEnds() == (v, v.pi)) or (e.getEnds() == (v.pi, v)):
         			self.A.add(e)
-
         num_edges = len(self.A)
         return total, num_edges
 
